@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8"/>
+		<style>
+			body {
+				background: #999;
+				font-family: Tahoma, Arial;
+			}
+
+			.main {
+				border-radius: 8px;
+				background: #F0F0F0;
+				display: inline-block;
+				width: 600px;
+				height: 400px;
+				-webkit-box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				-o-box-sizing: border-box;
+				box-sizing: border-box;
+				padding: 20px;
+				left: 50%;
+				top: 50%;
+				position: absolute;
+				margin-left: -300px;
+				margin-top: -200px;
+				-webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+				-moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+				-o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+				box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+			}
+
+			.title {
+				margin: 0;
+				text-align: right;
+				padding: 5px 0;
+			}
+
+			#autor_foto {
+				margin: 10px 30px 10px 10px;
+				float: left;
+				width: 240px;
+				height: 240px;
+			}
+
+			#cita {
+				margin: 20px;
+				text-align: right;
+			}
+
+			#autor_nombre {
+				clear: both;
+				text-align: right; 
+			}
+
+			.menu {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+				text-align: center;
+			}
+
+			.menu li {
+				display: inline-block;
+			}
+
+			.menu li a {
+				display: block;
+				background: #C0C0C0;
+				padding: 5px 10px;
+				margin: 5px;
+				text-decoration: none;
+				color: #444;
+			}
+
+			.menu li:hover a {
+				background: #444;
+				color: #F0F0F0;
+			}
+		</style>
+		<title>Citas Célebres</title>
+	</head>
+	<body>
+		<div class="main" id="content">
+		  	<h2 class="title">Citas Célebres</h2>
+		  	<ul class="menu">
+				<li class="selected">
+					<a href="kurt-cobain">Kurt Cobain</a>
+				</li>
+				<li>
+					<a href="mahatma-gandhi">Mahatma Gandhi</a>
+				</li>
+				<li>
+					<a href="albert-einstein">Albert Einstein</a>
+				</li>
+				<li>
+					<a href="john-lennon">John Lennon</a>
+				</li>
+			</ul>
+			<img src="main.jpg" id="autor_foto"/>
+			<p id="cita">
+				Haz click en cualquier botón para ver una cita.
+			</p>
+			<div id="autor_nombre"></div>
+		</div>
+	</body>
+	<script>
+		var autor = document.getElementById('autor_nombre'),
+			cita = document.getElementById('cita'),
+			foto = document.getElementById('autor_foto'), 
+			links = document.getElementsByTagName('a'),
+			i,
+			citas = {
+				"kurt-cobain": {
+					autor: "Kurt Cobain",
+					foto: "cobain.jpg",
+					cita: "\"I'd rather be hated for who I am, than loved for who I am not.\""
+				},
+				"mahatma-gandhi": {
+					autor: "Mahatma Gandhi",
+					foto: "gandhi.jpg",
+					cita: "\"You must be the change you wish to see in the world.\""
+				},
+				"albert-einstein": {
+					autor: "Albert Einstein",
+					foto: "einstein.jpg",
+					cita: "\"Learn from yesterday, live for today, hope for tomorrow. The important thing is not to stop questioning.\""
+				},
+				"john-lennon": {
+					autor: "John Lennon",
+					foto: "lennon.jpg",
+					cita: "\"You don't need anybody to tell you who you are or what you are. You are what you are!\""
+				}
+			};
+
+		function actualizarContenido(datos) {
+			if(!datos) {
+				return;
+			}
+			autor.textContent = datos.autor;
+			cita.textContent = datos.cita;
+			foto.src = datos.foto;
+			document.title = datos.title; 
+		}
+
+		function clickEnLink(e) {
+			var identificador_dato, datos;
+
+			e.preventDefault();
+
+			identificador_dato = e.target.href.split("/").pop();
+			datos = citas[identificador_dato]; 
+			datos.title = "Citas Célebres: " + datos.autor; 
+			actualizarContenido(datos); 
+      		history.pushState(datos, event.target.textContent, event.target.href);
+		}
+
+		for(i = 0; i < links.length; i++) {
+			links[i].addEventListener('click', clickEnLink, false);
+		}
+
+		window.addEventListener('popstate', function(event) {
+			console.log('evento popstate disparado!');
+			actualizarContenido(event.state);
+		});
+
+		history.replaceState({
+			cita: cita.textContent,
+			foto: foto.src,
+			autor: autor.textContent,
+			title: document.title
+	    }, document.title, document.location.href);
+	</script>
+</html>
